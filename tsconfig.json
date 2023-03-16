@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "src/pages/components/read2.tsx"  ],
   "exclude": ["node_modules"]
 }

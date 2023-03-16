@@ -17,16 +17,22 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "@types/csv-parse": "^1.2.2",
+    "csv-parser": "^3.0.0",
     "next": "^13.2.1",
     "next-auth": "^4.19.0",
+    "papaparse": "^5.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-papaparse": "^4.1.0",
     "superjson": "1.9.1",
-    "zod": "^3.20.6"
+    "zod": "^3.20.6",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@types/eslint": "^8.21.1",
     "@types/node": "^18.14.0",
+    "@types/papaparse": "^5.3.7",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
