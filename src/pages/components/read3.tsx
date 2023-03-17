@@ -7,7 +7,7 @@ interface FileContent {
 const FileUploadComponent = () => {
   const [fileContent, setFileContent] = useState<FileContent[]>([]);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload =  (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const file = event.target.files[0];
     const fileReader = new FileReader();
