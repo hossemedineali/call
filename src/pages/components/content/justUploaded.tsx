@@ -7,7 +7,7 @@ import { useUploadedData } from "~/pages/store/store";
 
 const JustUploaded = () => {
     const {data}=useUploadedData()
-console.log(data)
+console.log('from table',data)
 return (
                 
 <div className="overflow-auto max-h-full">

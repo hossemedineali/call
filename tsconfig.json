@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-, "src/pages/components/read2.tsx"  ],
+, "src/pages/components/read2.tsx", "src/pages/components/read3.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -3,7 +3,6 @@ import Head from "next/head";
 
 import SideBar from "./components/sidebar";
 import { useUploadedData, useUserSteps } from "./store/store";
-import FileInput from "./components/readFiles";
 import CSVUpload from "./components/read3";
 import JustUploaded from "./components/content/justUploaded";
 import { api } from "~/utils/api";
@@ -44,7 +43,7 @@ const Home: NextPage = () => {
         <div className="w-full flex-grow flex justify-center pt-20 max-h-screen">
               {currentTab=='reader'&&<CSVUpload />}
               {currentTab=='uploaded'&&<div className=" flex flex-col ">
-                <button  className=" px-3 py-1 w-fit mx-auto bg-white rounded-xl">Save data to the database</button>
+                <button onClick={uploadData} className=" px-3 py-1 w-fit mx-auto bg-white rounded-xl">Save data to the database</button>
                 <JustUploaded />
 
                 </div>

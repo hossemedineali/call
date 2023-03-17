@@ -1,63 +1,47 @@
-import React, { CSSProperties } from 'react';
+import { useState } from 'react';
+import { parseStringPromise } from 'xml2js';
+import fs from 'fs-extra';
 
-import { useCSVReader } from 'react-papaparse';
-import { useUploadedData, useUserSteps } from '../store/store';
+type XmlData = {
+  name: string;
+  age: number;
+  // add more properties as needed
+};
 
+const XmlUploader = () => {
+  const [xmlData, setXmlData] = useState<XmlData[]>([]);
 
-export default function CSVReader() {
-  const { CSVReader } = useCSVReader();
-  const {setDataIsUploaded,setUploadedData}=useUploadedData()
-  const {setCurrentTab}=useUserSteps()
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsText(file, 'utf-8');
+    reader.onload = async (event) => {
+      if (!event.target) return;
+      const data = event.target.result as string;
+      const parsedData = await parseStringPromise(data, { explicitArray: false });
+      const dataArray: XmlData[] = parsedData.root.item.map((item: any) => ({
+        name: item.name,
+        age: parseInt(item.age, 10),
+      }));
+      setXmlData(dataArray);
+    };
+  };
 
   return (
-    <CSVReader
-        onUploadAccepted={(results: any) => {
-      const data = results.data.map((row: any) => {
-     
-        return {
-          // replace these keys with your own object keys
-          name: row[0],
-          lastName: row[1],
-          phonenumber: row[8],
-          // add more keys as needed
-          //name, phonenumber, lastName
-        };
-      });
-    
-      const newData=data.map((item:any,index:any)=>{
-        if(index!=51){
-          return item
-        }
-      })
-        setUploadedData(data)
-      
-     setCurrentTab('uploaded')
-         }}
-    
-
-    >
-      {({
-        getRootProps,
-        acceptedFile='.csv ,.txt',
-        ProgressBar,
-        getRemoveFileProps,
-
-      }: any) => (
-        <>
-          <div >
-            <button type='button' {...getRootProps()} >
-              Browse file
-            </button>
-            <div >
-              {acceptedFile && acceptedFile.name}
-            </div>
-            <button {...getRemoveFileProps()} >
-              Remove
-            </button>
-          </div>
-          <ProgressBar  />
-        </>
-      )}
-    </CSVReader>
+    <div>
+      <input type="file" accept=".xml" onChange={handleFileUpload} />
+      <ul>
+        {xmlData.map((item, index) => (
+          <li key={index}>
+            {item.name} ({item.age})
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
+
+
+export default XmlUploader
