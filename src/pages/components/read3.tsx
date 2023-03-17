@@ -1,47 +1,72 @@
 import { useState } from 'react';
-import { parseStringPromise } from 'xml2js';
-import fs from 'fs-extra';
 
-type XmlData = {
-  name: string;
-  age: number;
-  // add more properties as needed
-};
+interface FileContent {
+  [key: string]: string;
+}
 
-const XmlUploader = () => {
-  const [xmlData, setXmlData] = useState<XmlData[]>([]);
+const FileUploadComponent = () => {
+  const [fileContent, setFileContent] = useState<FileContent[]>([]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    if (!event.target.files) return;
+    const file = event.target.files[0];
+    const fileReader = new FileReader();
     if (!file) return;
+    fileReader.readAsText(file);
 
-    const reader = new FileReader();
-    reader.readAsText(file, 'utf-8');
-    reader.onload = async (event) => {
-      if (!event.target) return;
-      const data = event.target.result as string;
-      const parsedData = await parseStringPromise(data, { explicitArray: false });
-      const dataArray: XmlData[] = parsedData.root.item.map((item: any) => ({
-        name: item.name,
-        age: parseInt(item.age, 10),
-      }));
-      setXmlData(dataArray);
+    fileReader.onload = () => {
+      const csvData = fileReader.result as string;
+      const rows = csvData.split('\n');
+      if (!rows[0]) return;
+      const headers = rows[0].split(',').map((header) => header.trim());
+
+      const jsonData = rows
+      .slice(1)
+      .filter((row) => row.trim() !== '')
+      .map((row) => {
+        if (!row) return;
+        const values: string[] = row.split(',');
+        return headers.reduce((obj: FileContent, header, index) => {
+          obj[header] = values[index]?.trim() || '';
+          return obj;
+        }, {} as FileContent);
+      });
+
+        /* const jsonData = rows
+  .slice(1)
+  .filter((row) => row.trim() !== '')
+  .map((row) => {
+    if (!row) return;
+    const values: string[] = row.split(',');
+    return headers.reduce((obj: FileContent, header, index) => {
+      obj[header] = values[index]?.trim() || '';
+      return obj;
+    }, {} as FileContent);
+  }); */
+        console.log(jsonData)
+  
+      //setFileContent(jsonData );
     };
   };
 
   return (
-    <div>
-      <input type="file" accept=".xml" onChange={handleFileUpload} />
-      <ul>
-        {xmlData.map((item, index) => (
-          <li key={index}>
-            {item.name} ({item.age})
-          </li>
-        ))}
-      </ul>
+    <div className="w-full">
+      <label htmlFor="file-upload" className="block mb-2 font-medium text-gray-700">
+        Upload File
+      </label>
+      <input
+        type="file"
+        id="file-upload"
+        accept=".csv"
+        className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        onChange={handleFileUpload}
+      />
+      <div className="mt-4">
+        <p className="font-medium text-gray-700">File Content:</p>
+        <pre className="p-2 bg-gray-100 rounded-md">{JSON.stringify(fileContent, null, 2)}</pre>
+      </div>
     </div>
   );
 };
 
-
-export default XmlUploader
+export default FileUploadComponent;
